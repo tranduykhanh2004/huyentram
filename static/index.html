@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Huyền Trâm Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <main class="linktree-shell">
+      <section class="profile-panel">
+        <div class="avatar-frame">
+          <img id="profile-avatar" src="https://via.placeholder.com/200" alt="Avatar">
+        </div>
+        <p class="handle" id="profile-username">@example.shop</p>
+        <h1 id="profile-name">Mua Rẻ - Mặc Đẹp</h1>
+        <p class="highlight" id="profile-highlight">Link của Tram</p>
+        <p class="bio" id="profile-bio">Nhắn mình trên Instagram để chốt đơn nhé!</p>
+        <div class="profile-actions">
+          <a class="btn primary" target="_blank" rel="noreferrer" href="https://www.instagram.com/_huientram?igsh=NWVxb3NpbWRheTl2&utm_source=qr">Instagram</a>
+        </div>
+      </section>
+
+      <section class="links-panel">
+        <p class="label">Danh sách gợi ý</p>
+        <div class="links-filters">
+          <div class="search-field">
+            <input id="product-search" type="search" placeholder="Tìm theo tên, mô tả hoặc cảm hứng...">
+          </div>
+          <div id="category-chips" class="chips" role="tablist" aria-label="Lọc theo danh mục"></div>
+        </div>
+        <div id="products" class="link-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <div id="product-modal" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <button id="modal-close" class="btn-ghost close-btn" type="button">Đóng</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

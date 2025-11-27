@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin • Huyền Trâm Shop</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="admin-page">
+  <div class="admin-shell">
+    <aside class="admin-hero">
+      <div class="logo-badge">HT</div>
+      <h1>Huyền Trâm Dashboard</h1>
+      <p>Quản lý thông tin Linktree và danh sách sản phẩm qua link bí mật được cấp.</p>
+      <ul class="admin-tips">
+        <li>1. Cập nhật tên, bio, avatar trong mục Profile.</li>
+        <li>2. Thêm sản phẩm mới với hình ảnh thật.</li>
+        <li>3. Linktree ngoài trang sẽ tự đồng bộ.</li>
+      </ul>
+      <a href="/" class="btn ghost">Xem trang ngoài</a>
+      <p id="token-warning" class="muted hidden">⚠️ Thiếu token truy cập. Hãy mở dashboard bằng link có ?token=YOUR_TOKEN.</p>
+    </aside>
+
+    <main class="admin-main">
+      <section id="admin-panel" class="dashboard">
+        <div class="dashboard-grid">
+          <div class="admin-card stretch" id="profile-card">
+            <div class="card-head">
+              <p class="badge">Profile</p>
+              <h3>Thông tin GLink</h3>
+              <p class="muted">Chỉnh sửa tên hiển thị, bio và avatar.</p>
+            </div>
+            <form id="profile-form" class="profile-form">
+              <div class="row two-up">
+                <label>Display name<input type="text" name="display_name" required></label>
+                <label>Username/handle<input type="text" name="username" placeholder="@lynvhu.passio.eco"></label>
+              </div>
+              <div class="row">
+                <label>Bio<textarea name="bio" rows="2" placeholder="Local curated closet..."></textarea></label>
+              </div>
+              <div class="row">
+                <label>Highlight<textarea name="highlight" rows="2" placeholder="Nhắn mình trên Instagram để chốt đơn nhé!"></textarea></label>
+              </div>
+              <div class="row">
+                <label>Avatar<input name="avatar" type="file" accept="image/*"></label>
+              </div>
+              <div class="form-actions"><button type="submit">Lưu profile</button></div>
+            </form>
+          </div>
+
+          <div class="admin-card stretch">
+            <div class="card-head">
+              <p class="badge">Sản phẩm</p>
+              <h3>Thêm / chỉnh sửa sản phẩm</h3>
+              <p class="muted">Ảnh đẹp và mô tả rõ giúp GLink hấp dẫn hơn.</p>
+            </div>
+            <form id="product-form" class="product-form">
+              <input type="hidden" name="id" id="product-id">
+              <div class="row">
+                <label>Title<input type="text" name="title" required placeholder="Tên sản phẩm"></label>
+              </div>
+              <div class="row">
+                <label>Description<textarea name="description" placeholder="Thông tin chất liệu, size..."></textarea></label>
+              </div>
+              <div class="row">
+                <label>Price<input name="price" type="number" step="0.01" value="0.00"></label>
+                <label>Image<input name="file" type="file" accept="image/*"></label>
+                <label>Category
+                  <select name="category_id" id="product-category">
+                    <option value="">Không phân loại</option>
+                  </select>
+                </label>
+              </div>
+              <div class="form-actions">
+                <button type="submit" id="product-submit">Lưu sản phẩm</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="admin-card stretch" id="category-card">
+            <div class="card-head">
+              <p class="badge">Danh mục</p>
+              <h3>Quản lý category</h3>
+              <p class="muted">Thêm, đổi tên hoặc xoá các danh mục sản phẩm.</p>
+            </div>
+            <form id="category-form">
+              <label>Tên danh mục<input type="text" name="name" required placeholder="Ví dụ: Đầm, Túi xách..."></label>
+              <div class="form-actions"><button type="submit">Thêm danh mục</button></div>
+            </form>
+            <div id="category-list"></div>
+          </div>
+        </div>
+
+        <div class="admin-card list-card" id="admin-products-list">
+          <div class="card-head">
+            <p class="badge">Danh sách</p>
+            <h3>Sản phẩm hiện có</h3>
+            <p class="muted">Nhấn vào Edit để nạp dữ liệu lên form, Delete để xóa.</p>
+          </div>
+          <div id="admin-products"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <!-- Small action modal used by admin (confirm / prompt) -->
+  <div id="action-modal" class="action-modal hidden" role="dialog" aria-modal="true">
+    <div class="action-modal-card">
+      <div class="action-modal-body">
+        <div id="action-modal-message" class="action-modal-message"></div>
+        <input id="action-modal-input" class="action-modal-input hidden" />
+      </div>
+      <div class="action-modal-actions">
+        <button id="action-modal-cancel" class="btn-ghost">Cancel</button>
+        <button id="action-modal-confirm" class="btn primary">OK</button>
+      </div>
+    </div>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

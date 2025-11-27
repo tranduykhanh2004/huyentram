@@ -1,0 +1,61 @@
+# Go build outputs
+/bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Dependency directories
+vendor/
+
+# Test binary, coverage
+*.test
+coverage.out
+
+# Environment files
+.env
+.env.*
+*.local
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# SQLite
+*.db
+*.sqlite3
+
+# TLS keys & certs
+*.pem
+*.key
+*.crt
+
+# node
+node_modules/
+
+# Other
+dist/
+build/
+
+# Go tooling
+**/go.sum
+
+# Optional: CI artifacts
+.coverage
+
+# Keep secret files out
+secrets.json
+
+# Local files
+*.localrc
+
+# Ignore tidb client certs if present
+tidb-client-*.pem

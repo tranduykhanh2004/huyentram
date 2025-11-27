@@ -1,0 +1,6 @@
+-- migration to create images table
+CREATE TABLE IF NOT EXISTS images (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  url TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
