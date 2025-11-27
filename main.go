@@ -1,16 +1,51 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"strconv"
 	"strings"
+	"syscall"
+	"time"
 
 	mysql "github.com/go-sql-driver/mysql"
 )
+
+// startSelfPing periodically requests pingURL using the provided context.
+// If pingURL is empty, it does nothing. interval is the duration between pings.
+func startSelfPing(ctx context.Context, pingURL string, interval time.Duration) {
+	if pingURL == "" {
+		return
+	}
+	client := &http.Client{Timeout: 8 * time.Second}
+	ticker := time.NewTicker(interval)
+	go func() {
+		defer ticker.Stop()
+		log.Printf("self-pinger enabled, pinging %s every %s", pingURL, interval)
+		for {
+			select {
+			case <-ctx.Done():
+				log.Println("self-pinger stopped")
+				return
+			case <-ticker.C:
+				resp, err := client.Get(pingURL)
+				if err != nil {
+					log.Printf("self-ping error: %v", err)
+					continue
+				}
+				resp.Body.Close()
+				log.Printf("self-ping status: %s", resp.Status)
+			}
+		}
+	}()
+}
 
 func main() {
 	dsn := os.Getenv("MYSQL_DSN")
@@ -138,6 +173,18 @@ func main() {
 	http.HandleFunc("/api/socials", socialsHandler(db))
 	http.HandleFunc("/api/socials/", socialItemHandler(db))
 	http.HandleFunc("/api/static-imgs", staticImagesHandler)
+	// simple ping endpoint used by self-pinger; protected by SELF_PING_TOKEN if set
+	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		expected := os.Getenv("SELF_PING_TOKEN")
+		if expected != "" {
+			got := r.URL.Query().Get("token")
+			if got == "" || got != expected {
+				http.Error(w, "unauthorized", http.StatusUnauthorized)
+				return
+			}
+		}
+		fmt.Fprintln(w, "Pong")
+	})
 	// admin convenience endpoints for delete operations (POST JSON {id})
 	http.HandleFunc("/api/admin/delete-product", adminDeleteProduct(db))
 	http.HandleFunc("/api/admin/delete-category", adminDeleteCategory(db))
@@ -155,8 +202,41 @@ func main() {
 		http.ServeFile(w, r, "./static"+r.URL.Path)
 	})
 
-	log.Println("server listening on :8000")
-	if err := http.ListenAndServe(":8000", nil); err != nil {
-		log.Fatalf("server: %v", err)
+	// Self-ping configuration: read URL and optional interval (minutes)
+	pingURL := os.Getenv("SELF_PING_URL")
+	if pingURL == "" {
+		// fallback for older name
+		pingURL = os.Getenv("RENDER_PING_URL")
 	}
+	intervalMin := 14
+	if v := os.Getenv("SELF_PING_INTERVAL_MIN"); v != "" {
+		if iv, err := strconv.Atoi(v); err == nil && iv > 0 {
+			intervalMin = iv
+		}
+	}
+
+	// create a cancellable context that listens for SIGINT/SIGTERM
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	// start the self-pinger (no-op if pingURL is empty)
+	startSelfPing(ctx, pingURL, time.Duration(intervalMin)*time.Minute)
+
+	srv := &http.Server{Addr: ":8000"}
+	go func() {
+		log.Println("server listening on :8000")
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("server: %v", err)
+		}
+	}()
+
+	// wait for interrupt
+	<-ctx.Done()
+	log.Println("shutdown signal received, shutting down server")
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		log.Fatalf("server shutdown failed: %v", err)
+	}
+	log.Println("server gracefully stopped")
 }
