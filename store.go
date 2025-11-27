@@ -24,6 +24,12 @@ var (
 		Highlight:   "Nhắn mình trên Instagram để chốt đơn nhé!",
 		AvatarURL:   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
 	}
+
+	devSocials = []Social{
+		{ID: 1, Name: "Instagram", URL: "https://www.instagram.com/lynvhu.passio.eco", Icon: "instagram.png", Ord: 1},
+		{ID: 2, Name: "Facebook", URL: "https://www.facebook.com/", Icon: "facebook.png", Ord: 2},
+	}
+	devNextSocialID int64 = 3
 )
 
 // DevGetProducts returns a copy of in-memory products for dev mode.
@@ -36,7 +42,7 @@ func DevGetProducts() []Product {
 }
 
 // DevAddProduct adds a product to the in-memory store and returns the new id.
-func DevAddProduct(title, description string, price float64, imageURL string, categoryID int64) int64 {
+func DevAddProduct(title, description string, price float64, imageURL string, categoryID int64, externalURL string, tag string) int64 {
 	devMu.Lock()
 	defer devMu.Unlock()
 	id := devNextID
@@ -48,7 +54,11 @@ func DevAddProduct(title, description string, price float64, imageURL string, ca
 			break
 		}
 	}
-	p := Product{ID: id, Title: title, Description: description, Price: price, ImageURL: imageURL, CategoryID: categoryID, Category: categoryName, CreatedAt: time.Now().Format(time.RFC3339)}
+	// default tag to mychoice when dev add (external_url may indicate shopee but admin should set tag)
+	if tag == "" {
+		tag = "mychoice"
+	}
+	p := Product{ID: id, Title: title, Description: description, Price: price, ImageURL: imageURL, ExternalURL: externalURL, Tag: tag, CategoryID: categoryID, Category: categoryName, CreatedAt: time.Now().Format(time.RFC3339)}
 	devProducts = append([]Product{p}, devProducts...)
 	return id
 }
@@ -67,7 +77,7 @@ func DevDeleteProduct(id int64) bool {
 }
 
 // DevUpdateProduct updates a product in-memory. Returns true if found.
-func DevUpdateProduct(id int64, title, description string, price float64, imageURL string, categoryID int64) bool {
+func DevUpdateProduct(id int64, title, description string, price float64, imageURL string, categoryID int64, externalURL string, tag string) bool {
 	devMu.Lock()
 	defer devMu.Unlock()
 	for i, p := range devProducts {
@@ -86,6 +96,11 @@ func DevUpdateProduct(id int64, title, description string, price float64, imageU
 			if imageURL != "" {
 				devProducts[i].ImageURL = imageURL
 			}
+			// update external URL if provided (empty string clears it)
+			devProducts[i].ExternalURL = externalURL
+			if tag != "" {
+				devProducts[i].Tag = tag
+			}
 			devProducts[i].CreatedAt = time.Now().Format(time.RFC3339)
 			return true
 		}
@@ -103,6 +118,59 @@ func DevGetProfile() Profile {
 	devMu.Lock()
 	defer devMu.Unlock()
 	return devProfile
+}
+
+// DevGetSocials returns copy of in-memory socials.
+func DevGetSocials() []Social {
+	devMu.Lock()
+	defer devMu.Unlock()
+	out := make([]Social, len(devSocials))
+	copy(out, devSocials)
+	return out
+}
+
+// DevAddSocial adds a social link in-memory and returns created Social.
+func DevAddSocial(name, url, icon string, ord int) Social {
+	devMu.Lock()
+	defer devMu.Unlock()
+	s := Social{ID: devNextSocialID, Name: name, URL: url, Icon: icon, Ord: ord}
+	devNextSocialID++
+	devSocials = append(devSocials, s)
+	return s
+}
+
+// DevUpdateSocial updates an existing social link; returns true if found.
+func DevUpdateSocial(id int64, name, url, icon string, ord int) bool {
+	devMu.Lock()
+	defer devMu.Unlock()
+	for i := range devSocials {
+		if devSocials[i].ID == id {
+			devSocials[i].Name = name
+			devSocials[i].URL = url
+			devSocials[i].Icon = icon
+			devSocials[i].Ord = ord
+			return true
+		}
+	}
+	return false
+}
+
+// DevDeleteSocial removes a social link by id and returns true if removed.
+func DevDeleteSocial(id int64) bool {
+	devMu.Lock()
+	defer devMu.Unlock()
+	idx := -1
+	for i := range devSocials {
+		if devSocials[i].ID == id {
+			idx = i
+			break
+		}
+	}
+	if idx == -1 {
+		return false
+	}
+	devSocials = append(devSocials[:idx], devSocials[idx+1:]...)
+	return true
 }
 
 // DevUpdateProfile updates the in-memory profile.

@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"os"
 )
 
 // ensureTable creates the necessary tables if they don't exist.
@@ -57,16 +58,45 @@ func ensureTable(db *sql.DB) error {
 		return err
 	}
 
-	// seed default categories
-	if _, err := db.Exec(`INSERT INTO categories (name)
-        SELECT * FROM (SELECT 'Quần áo' UNION SELECT 'Đầm' UNION SELECT 'Giày dép') AS defaults
-        WHERE NOT EXISTS (SELECT 1 FROM categories)`); err != nil {
+	// socials table for profile social links (icons stored under static/img)
+	if _, err := db.Exec(`CREATE TABLE IF NOT EXISTS socials (
+		id BIGINT AUTO_INCREMENT PRIMARY KEY,
+		name VARCHAR(255) NOT NULL,
+		url TEXT NOT NULL,
+		icon VARCHAR(255),
+		ord INT DEFAULT 0
+	)`); err != nil {
 		return err
+	}
+
+	// seed default categories only in DEV_MODE. In production we avoid auto-creating categories
+	// so that admin deletions are permanent and categories are managed explicitly.
+	if os.Getenv("DEV_MODE") == "true" {
+		if _, err := db.Exec(`INSERT INTO categories (name)
+		SELECT * FROM (SELECT 'Quần áo' UNION SELECT 'Đầm' UNION SELECT 'Giày dép') AS defaults
+		WHERE NOT EXISTS (SELECT 1 FROM categories)`); err != nil {
+			return err
+		}
 	}
 
 	// ensure category_id column exists (in case table was created earlier without)
 	if _, err := db.Exec(`ALTER TABLE products ADD COLUMN IF NOT EXISTS category_id BIGINT NULL`); err == nil {
 		_, _ = db.Exec(`ALTER TABLE products ADD INDEX IF NOT EXISTS idx_products_category (category_id)`)
+	}
+
+	// ensure external_url column exists for products (used for Shopee/external links)
+	if _, err := db.Exec(`ALTER TABLE products ADD COLUMN IF NOT EXISTS external_url TEXT`); err != nil {
+		return err
+	}
+
+	// ensure tag column exists for products to mark 'mychoice' vs 'shopee'
+	if _, err := db.Exec(`ALTER TABLE products ADD COLUMN IF NOT EXISTS tag VARCHAR(16) DEFAULT 'mychoice'`); err != nil {
+		return err
+	}
+
+	// ensure image_public_id column exists to allow deleting images from Cloudinary
+	if _, err := db.Exec(`ALTER TABLE products ADD COLUMN IF NOT EXISTS image_public_id TEXT`); err != nil {
+		return err
 	}
 
 	return nil

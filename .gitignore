@@ -46,7 +46,6 @@ dist/
 build/
 
 # Go tooling
-**/go.sum
 
 # Optional: CI artifacts
 .coverage

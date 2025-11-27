@@ -134,6 +134,10 @@ func main() {
 	// categories endpoints
 	http.HandleFunc("/api/categories", categoriesHandler(db))
 	http.HandleFunc("/api/categories/", categoryItemHandler(db))
+	// socials endpoints and static images list
+	http.HandleFunc("/api/socials", socialsHandler(db))
+	http.HandleFunc("/api/socials/", socialItemHandler(db))
+	http.HandleFunc("/api/static-imgs", staticImagesHandler)
 	// admin convenience endpoints for delete operations (POST JSON {id})
 	http.HandleFunc("/api/admin/delete-product", adminDeleteProduct(db))
 	http.HandleFunc("/api/admin/delete-category", adminDeleteCategory(db))

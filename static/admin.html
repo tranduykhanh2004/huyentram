@@ -42,10 +42,18 @@
                 <label>Highlight<textarea name="highlight" rows="2" placeholder="Nhắn mình trên Instagram để chốt đơn nhé!"></textarea></label>
               </div>
               <div class="row">
-                <label>Avatar<input name="avatar" type="file" accept="image/*"></label>
+                <label>Avatar
+                  <!-- hidden native avatar file input, show custom button + filename -->
+                  <input id="avatar-file" name="avatar" type="file" accept="image/*" style="display:none">
+                  <div style="display:flex;gap:0.6rem;align-items:center;margin-top:0.4rem">
+                    <button type="button" id="choose-avatar-btn" class="btn ghost">Chọn ảnh…</button>
+                    <span id="chosen-avatar-name" class="muted">Chưa chọn ảnh</span>
+                  </div>
+                </label>
               </div>
               <div class="form-actions"><button type="submit">Lưu profile</button></div>
             </form>
+            <!-- Social links are fixed to Facebook / Instagram / TikTok and edited via profile fields (username) -->
           </div>
 
           <div class="admin-card stretch">
@@ -64,11 +72,20 @@
               </div>
               <div class="row">
                 <label>Price<input name="price" type="number" step="0.01" value="0.00"></label>
-                <label>Image<input name="file" type="file" accept="image/*"></label>
-                <label>Category
-                  <select name="category_id" id="product-category">
-                    <option value="">Không phân loại</option>
-                  </select>
+                <label>Category<select name="category_id" id="product-category"><option value="0">— Chọn danh mục —</option></select></label>
+                <label>Tag<select name="tag" id="product-tag"><option value="mychoice">My Choice</option><option value="shopee">Shopee</option></select></label>
+              </div>
+              <div class="row">
+                <label style="flex:1">Image
+                  <!-- hidden native file input, we show custom button + filename -->
+                  <input id="product-file" name="file" type="file" accept="image/*" style="display:none">
+                  <div style="display:flex;gap:0.6rem;align-items:center;margin-top:0.4rem">
+                    <button type="button" id="choose-file-btn" class="btn ghost">Chọn ảnh…</button>
+                    <span id="chosen-file-name" class="muted">Chưa chọn tệp nào</span>
+                  </div>
+                </label>
+                <label class="external-field" style="flex:1">Shopee link (hoặc link bán hàng)
+                  <input class="shopee-input" type="url" name="external_url" placeholder="https://shopee.vn/your-item">
                 </label>
               </div>
               <div class="form-actions">
@@ -77,17 +94,21 @@
             </form>
           </div>
 
-          <div class="admin-card stretch" id="category-card">
+          <div class="admin-card">
             <div class="card-head">
               <p class="badge">Danh mục</p>
-              <h3>Quản lý category</h3>
-              <p class="muted">Thêm, đổi tên hoặc xoá các danh mục sản phẩm.</p>
+              <h3>Quản lý danh mục</h3>
+              <p class="muted">Thêm / sửa / xóa danh mục như Đầm, Giày, Dép...</p>
             </div>
-            <form id="category-form">
-              <label>Tên danh mục<input type="text" name="name" required placeholder="Ví dụ: Đầm, Túi xách..."></label>
-              <div class="form-actions"><button type="submit">Thêm danh mục</button></div>
+            <form id="category-form" class="admin-card">
+              <div class="row">
+                <label>Tên danh mục<input type="text" name="name" required placeholder="Ví dụ: Đầm"></label>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn primary">Thêm danh mục</button>
+              </div>
             </form>
-            <div id="category-list"></div>
+            <div id="category-list" style="margin-top:0.8rem"></div>
           </div>
         </div>
 
@@ -113,6 +134,42 @@
         <button id="action-modal-cancel" class="btn-ghost">Cancel</button>
         <button id="action-modal-confirm" class="btn primary">OK</button>
       </div>
+    </div>
+  </div>
+  <!-- Product edit modal (separate from add form) -->
+  <div id="product-edit-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button id="edit-modal-close" class="btn-ghost close-btn" type="button">Đóng</button>
+      <form id="product-edit-form" class="admin-card">
+        <div class="card-head">
+          <p class="badge">Sản phẩm</p>
+          <h3>Sửa sản phẩm</h3>
+          <p class="muted">Chỉnh sửa chi tiết sản phẩm. Ảnh và link Shopee có thể cập nhật riêng.</p>
+        </div>
+        <input type="hidden" name="id" id="edit-product-id">
+        <div class="row">
+          <label>Title<input type="text" name="title" required placeholder="Tên sản phẩm"></label>
+        </div>
+        <div class="row">
+          <label>Description<textarea name="description" placeholder="Thông tin chất liệu, size..."></textarea></label>
+        </div>
+        <div class="row">
+          <label>Price<input name="price" type="number" step="0.01" placeholder="0.00"></label>
+          <label>Category<select name="category_id" id="edit-product-category"><option value="0">— Chọn danh mục —</option></select></label>
+          <label>Tag<select name="tag" id="edit-product-tag"><option value="mychoice">My Choice</option><option value="shopee">Shopee</option></select></label>
+        </div>
+        <div class="row">
+          <label>Image
+            <input id="edit-product-file" name="file" type="file" accept="image/*">
+          </label>
+        </div>
+        <div class="row">
+          <label class="external-field">Shopee link (hoặc link bán hàng)
+            <input class="shopee-input" type="url" name="external_url" placeholder="https://shopee.vn/your-item">
+          </label>
+        </div>
+        <div class="form-actions"><button type="submit" class="btn primary">Lưu thay đổi</button></div>
+      </form>
     </div>
   </div>
   <script src="/static/app.js"></script>

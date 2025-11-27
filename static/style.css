@@ -29,11 +29,11 @@ body{
 }
 .profile-panel{
   background:var(--bg-card);
-  border-radius:calc(var(--radius) + 8px);
-  padding:2.5rem 1.5rem 2rem;
-  box-shadow:var(--shadow);
+  border-radius:28px;
+  padding:2.2rem 1.6rem 1.6rem;
+  box-shadow:0 18px 40px rgba(17,19,34,0.06);
   position:relative;
-  overflow:hidden;
+  overflow:visible;
 }
 .profile-panel::after{
   content:'';
@@ -47,21 +47,21 @@ body{
 }
 .profile-panel > *{position:relative;z-index:1}
 .avatar-frame{
-  width:140px;
-  height:140px;
-  border-radius:32px;
-  margin:0 auto 1rem;
+  width:150px;
+  height:150px;
+  border-radius:999px;
+  margin:0 auto 0.6rem;
   padding:6px;
-  background:linear-gradient(135deg,#ffd1d1,#b8c6ff);
+  background:linear-gradient(135deg,#fff,#f3f4ff);
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 20px 40px rgba(17,19,34,0.1);
+  box-shadow:0 14px 30px rgba(17,19,34,0.08);
 }
 .avatar-frame img{
   width:100%;
   height:100%;
-  border-radius:24px;
+  border-radius:999px;
   object-fit:cover;
 }
 .handle{
@@ -70,19 +70,40 @@ body{
   font-weight:500;
 }
 .profile-panel h1{
-  margin:0.35rem 0 0.4rem;
-  font-size:1.9rem;
+  margin:0.35rem 0 0.12rem;
+  font-size:1.5rem;
 }
 .highlight{
-  margin:0;
+  margin:0.15rem 0 0.6rem;
   font-weight:600;
   color:#2c2e3f;
+  letter-spacing:0.02em;
 }
 .bio{
-  margin:0.45rem 0 1.2rem;
+  margin:0.45rem 0 1rem;
   color:var(--muted);
-  line-height:1.5;
+  line-height:1.45;
+  white-space: pre-wrap;
+  font-size:0.96rem;
 }
+.social-icons{display:flex;gap:0.8rem;justify-content:center;margin-bottom:0.8rem}
+.social{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:999px;background:#fff;border:1px solid rgba(17,19,34,0.06);box-shadow:0 8px 20px rgba(17,19,34,0.04);font-weight:700;color:var(--muted);text-decoration:none}
+.social.instagram{background:linear-gradient(45deg,#ff7a7a,#ffd1d1);color:#fff}
+.social.facebook{background:linear-gradient(45deg,#3b5998,#8b9dc3);color:#fff}
+.social.tiktok{background:#000;color:#fff}
+
+.social:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(17,19,34,0.09)}
+
+/* increase icon image size inside social buttons */
+.social img{width:40px;height:40px;object-fit:contain}
+
+
+.tabs{display:flex;gap:0.6rem;justify-content:center;margin:0.7rem 0}
+.tab{background:#fff;border-radius:999px;padding:.6rem 1rem;border:1px solid rgba(17,19,34,0.06);font-weight:700}
+.tab.active{background:linear-gradient(90deg,#fff,#f7f7ff);box-shadow:0 10px 30px rgba(76,99,255,0.05);color:var(--accent)}
+
+/* Preserve user-entered line breaks in bio/profile descriptions */
+.bio{ white-space: pre-wrap; }
 .profile-actions{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
 .btn{
   border:none;
@@ -185,9 +206,9 @@ body{
 }
 .link-card:hover{transform:translateY(-4px)}
 .link-card .thumb{
-  width:72px;
-  height:72px;
-  border-radius:18px;
+  width:120px;
+  height:120px;
+  border-radius:12px;
   overflow:hidden;
   flex-shrink:0;
   background:var(--accent-soft);
@@ -203,7 +224,7 @@ body{
   align-items:center;
   justify-content:center;
   color:var(--muted);
-  font-size:.75rem;
+  font-size:.9rem;
   text-transform:uppercase;
   letter-spacing:.05em;
 }
@@ -259,6 +280,12 @@ body{
   box-shadow:0 30px 80px rgba(0,0,0,0.35);
   z-index:1;
 }
+.modal-card .card-head{ margin-bottom:0.8rem }
+.modal-card .card-head h3{ margin:0.2rem 0 0.25rem }
+.modal-card .admin-card{ padding:0.9rem; box-shadow:none; border-radius:12px }
+.modal-card input[type=text], .modal-card input[type=number], .modal-card textarea, .modal-card select{ width:100%; border-radius:10px; padding:0.65rem 0.8rem; border:1px solid rgba(17,19,34,0.09); box-shadow:none }
+.modal-card .form-actions{ display:flex; justify-content:flex-end; margin-top:0.8rem }
+.modal-card .close-btn{ top:0.8rem; right:0.8rem }
 .modal-card img{width:100%;border-radius:18px;margin-bottom:1rem;object-fit:cover}
 .close-btn{
   position:absolute;
@@ -312,6 +339,26 @@ body{
 }
 /* make file inputs a bit smaller visually */
 .admin-card input[type=file]{ padding:.25rem }
+/* hide native file inputs inside product and profile forms and style custom choosers */
+#product-form input[type=file], #profile-form input[type=file]{ display:none }
+.btn.chooser, #choose-file-btn, #choose-avatar-btn{ padding:0.6rem 0.9rem; border-radius:10px }
+.chosen-name, #chosen-file-name, #chosen-avatar-name{ font-size:0.95rem; color:var(--muted) }
+
+/* nicer Shopee input */
+.shopee-input{
+  width:100%;
+  border-radius:12px;
+  border:1px solid rgba(17,19,34,0.08);
+  padding:0.7rem 0.9rem 0.7rem 2.6rem; /* leave space for an optional icon */
+  background:linear-gradient(180deg,#fff,#fbfbfd);
+}
+.shopee-input::placeholder{ color:var(--muted) }
+.external-field{ position:relative }
+.external-field::before{
+  content:'';
+  position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;background-image:url('/static/img/shopee.svg');background-size:contain;background-repeat:no-repeat;opacity:0.95
+}
 .admin-card .form-actions{ margin-top:0.9rem }
 .admin-card .form-actions button{
   border-radius:12px;
@@ -460,6 +507,13 @@ body{
   .admin-hero{padding:1.2rem}
 }
 
+@media (min-width:700px){
+  /* product list: image left, description to the right */
+  .link-grid{display:flex;flex-direction:column;gap:1rem}
+  .link-card{align-items:flex-start}
+  .link-card .thumb{width:140px;height:120px}
+}
+
 /* Mobile-first admin tweaks */
 @media (max-width:900px){
   .admin-shell{flex-direction:column}
@@ -488,6 +542,9 @@ body{
   .action-modal-message{font-size:1rem}
   .action-modal-input{padding:0.85rem}
 }
+
+/* admin social list */
+/* removed admin social list styles (socials are fixed) */
 
 @media (max-width:480px){
   .admin-hero h1{font-size:1.2rem}
