@@ -285,7 +285,7 @@ function renderProducts() {
       <div class="info">
         <p class="title">${p.title}</p>
         <p class="desc">${p.description || 'Đang cập nhật mô tả chi tiết.'}</p>
-        <span class="price">${formatPrice(p.price)}${p.category ? ` • ${p.category}` : ''}</span>
+        <span class="price">${p.tag === 'tiktok' ? 'Sale' : formatPrice(p.price)}${p.category ? ` • ${p.category}` : ''}</span>
   ${p.tag === 'tiktok' && p.external_url ? `<div style="margin-top:0.6rem"><a class="btn ghost" href="${p.external_url}" target="_blank" rel="noreferrer">Mua trên TikTok</a></div>` : ''}
       </div>`;
     card.addEventListener('click', () => showProductModal(p));
@@ -303,7 +303,7 @@ function showProductModal(p) {
       : `<div class="thumb-placeholder" style="height:280px;border-radius:16px">No image</div>`}
     <h3>${p.title}</h3>
     <p>${p.description || 'Đang cập nhật mô tả chi tiết.'}</p>
-    <p class="price" style="margin-top:1rem;font-size:1.2rem">${formatPrice(p.price)}</p>
+    <p class="price" style="margin-top:1rem;font-size:1.2rem">${p.tag === 'tiktok' ? 'Đang sale' : formatPrice(p.price)}</p>
     ${p.category ? `<p style="color:#7b8191">Danh mục: ${p.category}</p>` : ''}
   ${p.tag === 'tiktok' && p.external_url ? `<div style="margin-top:0.8rem"><a class="btn primary" href="${p.external_url}" target="_blank" rel="noreferrer">Mua trên TikTok</a></div>` : (p.tag !== 'tiktok' ? `<div style="margin-top:1.2rem"><a class="btn primary" href="https://www.instagram.com/${(document.getElementById('profile-username')?.textContent || '').replace(/^@/, '')}" target="_blank" rel="noreferrer">Nhắn Instagram để chốt</a></div>` : '')}
   `;
@@ -405,14 +405,53 @@ function renderCategories(cats) {
 function toggleExternalField() {
   const tagSel = document.getElementById('product-tag');
   const extWrap = document.querySelector('.external-field');
+  const priceInput = document.querySelector('#product-form input[name="price"]');
   if (!tagSel || !extWrap) return;
+
   if (tagSel.value === 'tiktok') {
     extWrap.classList.remove('hidden');
     extWrap.querySelector('input').required = true;
+    // Hide price for tiktok
+    if (priceInput && priceInput.parentElement) {
+      priceInput.parentElement.classList.add('hidden');
+      priceInput.value = 0;
+    }
   } else {
     extWrap.classList.add('hidden');
     extWrap.querySelector('input').required = false;
     extWrap.querySelector('input').value = '';
+    // Show price for mychoice
+    if (priceInput && priceInput.parentElement) {
+      priceInput.parentElement.classList.remove('hidden');
+    }
+  }
+}
+
+function toggleEditExternalField() {
+  const tagSel = document.getElementById('edit-product-tag');
+  const form = document.getElementById('product-edit-form');
+  if (!tagSel || !form) return;
+  const extWrap = form.querySelector('.external-field');
+  const priceInput = form.querySelector('input[name="price"]');
+
+  if (tagSel.value === 'tiktok') {
+    if (extWrap) {
+      extWrap.classList.remove('hidden');
+      extWrap.querySelector('input').required = true;
+    }
+    if (priceInput && priceInput.parentElement) {
+      priceInput.parentElement.classList.add('hidden');
+      priceInput.value = 0;
+    }
+  } else {
+    if (extWrap) {
+      extWrap.classList.add('hidden');
+      extWrap.querySelector('input').required = false;
+      extWrap.querySelector('input').value = '';
+    }
+    if (priceInput && priceInput.parentElement) {
+      priceInput.parentElement.classList.remove('hidden');
+    }
   }
 }
 
@@ -535,6 +574,16 @@ function showProductEditModal(p) {
       sel.value = p.category_id || 0;
     }
   }).catch(() => { });
+
+  // trigger toggle for edit form
+  toggleEditExternalField();
+  const editTagSel = document.getElementById('edit-product-tag');
+  if (editTagSel) {
+    // remove old listener to avoid duplicates if any (though showProductEditModal is called multiple times, listeners should be attached once or carefully managed)
+    // simpler: clone node or just ensure we don't stack listeners. 
+    // actually showProductEditModal is called on click. better to attach listener once in DOMContentLoaded.
+    // but here we need to trigger it immediately.
+  }
 }
 
 // wire edit modal interactions
@@ -730,6 +779,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // tag select toggles external field
   const tagSel = document.getElementById('product-tag');
   if (tagSel) { tagSel.addEventListener('change', toggleExternalField); toggleExternalField(); }
+
+  const editTagSel = document.getElementById('edit-product-tag');
+  if (editTagSel) { editTagSel.addEventListener('change', toggleEditExternalField); }
 
   if (profileForm) {
     profileForm.addEventListener('submit', async (e) => {
