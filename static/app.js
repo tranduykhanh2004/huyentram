@@ -112,7 +112,7 @@ async function loadProfile(populateForm = false) {
       // try to pick URLs from data.socials when available
       const socialsMap = {};
       (data.socials || []).forEach(s => { if (s && s.name) socialsMap[s.name.toLowerCase()] = s; });
-      const instaURL = socialsMap['instagram']?.url || (uname ? 'https://www.instagram.com/_huientram?igsh=NWVxb3NpbWRheTl2&utm_source=qr' + uname : 'https://www.instagram.com');
+      const instaURL = socialsMap['instagram']?.url || 'https://www.instagram.com/_huientram/';
       const fbURL = socialsMap['facebook']?.url || 'https://www.facebook.com/ty.tung.180?mibextid=wwXIfr&rdid=06MPlWdqSOX9lOCp&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1ZS1NpLBL3%2F%3Fmibextid%3DwwXIfr';
       const ttURL = socialsMap['tiktok']?.url || 'https://www.tiktok.com/@huyentram0206?_r=1&_t=ZS-91kThaRWClJ';
 
@@ -305,7 +305,7 @@ function showProductModal(p) {
     <p>${p.description || 'Đang cập nhật mô tả chi tiết.'}</p>
     <p class="price" style="margin-top:1rem;font-size:1.2rem">${p.tag === 'tiktok' ? 'Đang sale' : formatPrice(p.price)}</p>
     ${p.category ? `<p style="color:#7b8191">Danh mục: ${p.category}</p>` : ''}
-  ${p.tag === 'tiktok' && p.external_url ? `<div style="margin-top:0.8rem"><a class="btn primary" href="${p.external_url}" target="_blank" rel="noreferrer">Mua trên TikTok</a></div>` : (p.tag !== 'tiktok' ? `<div style="margin-top:1.2rem"><a class="btn primary" href="https://www.instagram.com/${(document.getElementById('profile-username')?.textContent || '').replace(/^@/, '')}" target="_blank" rel="noreferrer">Nhắn Instagram để chốt</a></div>` : '')}
+  ${p.tag === 'tiktok' && p.external_url ? `<div style="margin-top:0.8rem"><a class="btn primary" href="${p.external_url}" target="_blank" rel="noreferrer">Mua trên TikTok</a></div>` : (p.tag !== 'tiktok' ? `<div style="margin-top:1.2rem"><a class="btn primary" href="https://www.instagram.com/_huientram/" target="_blank" rel="noreferrer">Nhắn Instagram để chốt</a></div>` : '')}
   `;
   modal.classList.remove('hidden');
   modal.classList.add('open');
