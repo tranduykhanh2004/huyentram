@@ -205,16 +205,16 @@ func createProduct(db *sql.DB, cloudURL string) http.HandlerFunc {
 			} else {
 				imageURL = ""
 			}
-			// if a link was provided but tag not explicitly set, infer shopee
-			if externalStr != "" && tagVal != "shopee" {
-				tagVal = "shopee"
+			// if a link was provided but tag not explicitly set, infer tiktok
+			if externalStr != "" && tagVal != "tiktok" {
+				tagVal = "tiktok"
 			}
-			// validate tag / external behavior in dev similarly: if shopee require external
-			if tagVal == "shopee" && externalStr == "" {
-				http.Error(w, "external_url required for shopee tag", http.StatusBadRequest)
+			// validate tag / external behavior in dev similarly: if tiktok require external
+			if tagVal == "tiktok" && externalStr == "" {
+				http.Error(w, "external_url required for tiktok tag", http.StatusBadRequest)
 				return
 			}
-			if tagVal != "shopee" {
+			if tagVal != "tiktok" {
 				tagVal = "mychoice"
 				// clear external for mychoice
 				externalStr = ""
@@ -259,12 +259,12 @@ func createProduct(db *sql.DB, cloudURL string) http.HandlerFunc {
 			imageURL = ""
 		}
 
-		// if a link was provided but tag not explicitly set, infer shopee
-		if externalStr != "" && tagVal != "shopee" {
-			tagVal = "shopee"
+		// if a link was provided but tag not explicitly set, infer tiktok
+		if externalStr != "" && tagVal != "tiktok" {
+			tagVal = "tiktok"
 		}
-		// sanitize tag for DB: anything other than 'shopee' becomes 'mychoice'
-		if tagVal != "shopee" {
+		// sanitize tag for DB: anything other than 'tiktok' becomes 'mychoice'
+		if tagVal != "tiktok" {
 			tagVal = "mychoice"
 			externalStr = ""
 		}
@@ -526,11 +526,11 @@ func productItemHandler(db *sql.DB, cloudURL string) http.HandlerFunc {
 				args = append(args, sqlNullString(externalVal))
 			}
 			if hasTag {
-				// enforce shopee requires external_url; mychoice should clear the link
-				if tagVal != "shopee" {
+				// enforce tiktok requires external_url; mychoice should clear the link
+				if tagVal != "tiktok" {
 					tagVal = "mychoice"
 				}
-				if tagVal == "shopee" {
+				if tagVal == "tiktok" {
 					// if external is not provided in this request, ensure existing product has one
 					if !(hasExternal && externalVal != "") {
 						var curExt sql.NullString
@@ -540,7 +540,7 @@ func productItemHandler(db *sql.DB, cloudURL string) http.HandlerFunc {
 							return
 						}
 						if curExt.String == "" {
-							http.Error(w, "external_url required when tag is shopee", http.StatusBadRequest)
+							http.Error(w, "external_url required when tag is tiktok", http.StatusBadRequest)
 							return
 						}
 					}

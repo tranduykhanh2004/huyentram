@@ -344,20 +344,20 @@ body{
 .btn.chooser, #choose-file-btn, #choose-avatar-btn{ padding:0.6rem 0.9rem; border-radius:10px }
 .chosen-name, #chosen-file-name, #chosen-avatar-name{ font-size:0.95rem; color:var(--muted) }
 
-/* nicer Shopee input */
-.shopee-input{
+/* nicer TikTok input */
+.tiktok-input{
   width:100%;
   border-radius:12px;
   border:1px solid rgba(17,19,34,0.08);
   padding:0.7rem 0.9rem 0.7rem 2.6rem; /* leave space for an optional icon */
   background:linear-gradient(180deg,#fff,#fbfbfd);
 }
-.shopee-input::placeholder{ color:var(--muted) }
+.tiktok-input::placeholder{ color:var(--muted) }
 .external-field{ position:relative }
 .external-field::before{
   content:'';
   position:absolute;left:10px;top:50%;transform:translateY(-50%);
-  width:18px;height:18px;background-image:url('/static/img/shopee.svg');background-size:contain;background-repeat:no-repeat;opacity:0.95
+  width:18px;height:18px;background-image:url('/static/img/tiktok.svg');background-size:contain;background-repeat:no-repeat;opacity:0.95
 }
 .admin-card .form-actions{ margin-top:0.9rem }
 .admin-card .form-actions button{

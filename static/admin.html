@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="vi">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin • Huyền Trâm Shop</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body class="admin-page">
   <div class="admin-shell">
     <aside class="admin-hero">
@@ -18,7 +20,8 @@
         <li>3. Linktree ngoài trang sẽ tự đồng bộ.</li>
       </ul>
       <a href="/" class="btn ghost">Xem trang ngoài</a>
-      <p id="token-warning" class="muted hidden">⚠️ Thiếu token truy cập. Hãy mở dashboard bằng link có ?token=YOUR_TOKEN.</p>
+      <p id="token-warning" class="muted hidden">⚠️ Thiếu token truy cập. Hãy mở dashboard bằng link có
+        ?token=YOUR_TOKEN.</p>
     </aside>
 
     <main class="admin-main">
@@ -39,7 +42,8 @@
                 <label>Bio<textarea name="bio" rows="2" placeholder="Local curated closet..."></textarea></label>
               </div>
               <div class="row">
-                <label>Highlight<textarea name="highlight" rows="2" placeholder="Nhắn mình trên Instagram để chốt đơn nhé!"></textarea></label>
+                <label>Highlight<textarea name="highlight" rows="2"
+                    placeholder="Nhắn mình trên Instagram để chốt đơn nhé!"></textarea></label>
               </div>
               <div class="row">
                 <label>Avatar
@@ -68,12 +72,18 @@
                 <label>Title<input type="text" name="title" required placeholder="Tên sản phẩm"></label>
               </div>
               <div class="row">
-                <label>Description<textarea name="description" placeholder="Thông tin chất liệu, size..."></textarea></label>
+                <label>Description<textarea name="description"
+                    placeholder="Thông tin chất liệu, size..."></textarea></label>
               </div>
               <div class="row">
                 <label>Price<input name="price" type="number" step="0.01" value="0.00"></label>
-                <label>Category<select name="category_id" id="product-category"><option value="0">— Chọn danh mục —</option></select></label>
-                <label>Tag<select name="tag" id="product-tag"><option value="mychoice">My Choice</option><option value="shopee">Shopee</option></select></label>
+                <label>Category<select name="category_id" id="product-category">
+                    <option value="0">— Chọn danh mục —</option>
+                  </select></label>
+                <label>Tag<select name="tag" id="product-tag">
+                    <option value="mychoice">My Choice</option>
+                    <option value="tiktok">TikTok</option>
+                  </select></label>
               </div>
               <div class="row">
                 <label style="flex:1">Image
@@ -84,8 +94,8 @@
                     <span id="chosen-file-name" class="muted">Chưa chọn tệp nào</span>
                   </div>
                 </label>
-                <label class="external-field" style="flex:1">Shopee link (hoặc link bán hàng)
-                  <input class="shopee-input" type="url" name="external_url" placeholder="https://shopee.vn/your-item">
+                <label class="external-field" style="flex:1">TikTok link (hoặc link bán hàng)
+                  <input class="tiktok-input" type="url" name="external_url" placeholder="https://shop.tiktok.com/...">
                 </label>
               </div>
               <div class="form-actions">
@@ -144,7 +154,7 @@
         <div class="card-head">
           <p class="badge">Sản phẩm</p>
           <h3>Sửa sản phẩm</h3>
-          <p class="muted">Chỉnh sửa chi tiết sản phẩm. Ảnh và link Shopee có thể cập nhật riêng.</p>
+          <p class="muted">Chỉnh sửa chi tiết sản phẩm. Ảnh và link TikTok có thể cập nhật riêng.</p>
         </div>
         <input type="hidden" name="id" id="edit-product-id">
         <div class="row">
@@ -155,8 +165,13 @@
         </div>
         <div class="row">
           <label>Price<input name="price" type="number" step="0.01" placeholder="0.00"></label>
-          <label>Category<select name="category_id" id="edit-product-category"><option value="0">— Chọn danh mục —</option></select></label>
-          <label>Tag<select name="tag" id="edit-product-tag"><option value="mychoice">My Choice</option><option value="shopee">Shopee</option></select></label>
+          <label>Category<select name="category_id" id="edit-product-category">
+              <option value="0">— Chọn danh mục —</option>
+            </select></label>
+          <label>Tag<select name="tag" id="edit-product-tag">
+              <option value="mychoice">My Choice</option>
+              <option value="tiktok">TikTok</option>
+            </select></label>
         </div>
         <div class="row">
           <label>Image
@@ -164,8 +179,8 @@
           </label>
         </div>
         <div class="row">
-          <label class="external-field">Shopee link (hoặc link bán hàng)
-            <input class="shopee-input" type="url" name="external_url" placeholder="https://shopee.vn/your-item">
+          <label class="external-field">TikTok link (hoặc link bán hàng)
+            <input class="tiktok-input" type="url" name="external_url" placeholder="https://shop.tiktok.com/...">
           </label>
         </div>
         <div class="form-actions"><button type="submit" class="btn primary">Lưu thay đổi</button></div>
@@ -174,4 +189,5 @@
   </div>
   <script src="/static/app.js"></script>
 </body>
+
 </html>

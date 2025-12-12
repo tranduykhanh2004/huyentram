@@ -54,7 +54,7 @@ func DevAddProduct(title, description string, price float64, imageURL string, ca
 			break
 		}
 	}
-	// default tag to mychoice when dev add (external_url may indicate shopee but admin should set tag)
+	// default tag to mychoice when dev add (external_url may indicate tiktok but admin should set tag)
 	if tag == "" {
 		tag = "mychoice"
 	}

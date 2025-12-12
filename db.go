@@ -84,12 +84,12 @@ func ensureTable(db *sql.DB) error {
 		_, _ = db.Exec(`ALTER TABLE products ADD INDEX IF NOT EXISTS idx_products_category (category_id)`)
 	}
 
-	// ensure external_url column exists for products (used for Shopee/external links)
+	// ensure external_url column exists for products (used for TikTok/external links)
 	if _, err := db.Exec(`ALTER TABLE products ADD COLUMN IF NOT EXISTS external_url TEXT`); err != nil {
 		return err
 	}
 
-	// ensure tag column exists for products to mark 'mychoice' vs 'shopee'
+	// ensure tag column exists for products to mark 'mychoice' vs 'tiktok'
 	if _, err := db.Exec(`ALTER TABLE products ADD COLUMN IF NOT EXISTS tag VARCHAR(16) DEFAULT 'mychoice'`); err != nil {
 		return err
 	}
@@ -97,6 +97,12 @@ func ensureTable(db *sql.DB) error {
 	// ensure image_public_id column exists to allow deleting images from Cloudinary
 	if _, err := db.Exec(`ALTER TABLE products ADD COLUMN IF NOT EXISTS image_public_id TEXT`); err != nil {
 		return err
+	}
+
+	// migrate old shopee tags to tiktok
+	if _, err := db.Exec(`UPDATE products SET tag = 'tiktok' WHERE tag = 'shopee'`); err != nil {
+		// log but don't fail, as it might be a non-critical error or table might not exist yet (though we created it above)
+		// actually we should probably just ignore error or log it.
 	}
 
 	return nil
